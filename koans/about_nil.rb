@@ -17,8 +17,8 @@ class AboutNil < EdgeCase::Koan
 
       # What message was attached to the exception?
       # (HINT: replace __ with part of the error message.)
-      print ("ELENA\n");
-      print (ex.message)
+      #print ("ELENA\n");
+      #print (ex.message)
 
       assert_match("undefined method `some_method_nil_doesnt_know_about' for nil:NilClass", ex.message)
     end

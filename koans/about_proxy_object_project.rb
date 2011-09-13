@@ -13,12 +13,62 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 # of the Proxy class is given in the AboutProxyObjectProject koan.
 
 class Proxy
+
+ 
   def initialize(target_object)
+    @messages = Array.new
     @object = target_object
+    @channel_eq_ctr = @channel_ctr = @power_ctr = @on_ctr = 0
     # ADD MORE CODE HERE
   end
 
+  
   # WRITE CODE HERE
+
+  def messages
+    @messages
+  end
+
+  def called?(method_name)
+    case method_name
+       when :channel= then @channel_eq_ctr > 1 
+       when :channel then @channel_ctr > 1 
+       when :power then @power_ctr > 1
+       when :on?  then @on_ctr > 1
+       else
+          false
+    end
+  end
+
+  def number_of_times_called(method_name)
+     case method_name
+       when :channel= then @channel_eq_ctr 
+       when :channel then @channel_ctr 
+       when :power then @power_ctr 
+       when :on?  then @on_ctr 
+       else
+          nil 
+    end 
+  end
+
+  def method_missing(method_name, *args, &block)
+      #print "\nSomeone called #{method_name} with <#{args.join(", ")}>"
+      if method_name == :channel=
+         @messages.push(:channel=)
+         @channel_eq_ctr = @channel_eq_ctr + 1
+         @object.channel = args[0]
+      else 
+         @messages.push(method_name)
+         case method_name
+            when :channel then  @channel_ctr = @channel_ctr + 1
+            when :power then @power_ctr = @power_ctr + 1
+            when :on? then @on_ctr = @on_ctr + 1
+         end
+         @object.send(method_name.to_s)
+      end
+  end
+  
+
 end
 
 # The proxy object should pass the following Koan:
